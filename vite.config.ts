@@ -4,15 +4,15 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig(async () => ({
-  base: "/portfolio-final/", // ← necessário para GitHub Pages
+  base: "/portfolio-final/",
   plugins: [
     react(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
-      process.env.REPL_ID !== undefined
+    process.env.REPL_ID !== undefined
       ? [
-        (await import("@replit/vite-plugin-cartographer")).cartographer(),
-      ]
+          (await import("@replit/vite-plugin-cartographer")).cartographer(),
+        ]
       : []),
   ],
   resolve: {
@@ -24,7 +24,7 @@ export default defineConfig(async () => ({
   },
   root: path.resolve(import.meta.dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
   },
 }));

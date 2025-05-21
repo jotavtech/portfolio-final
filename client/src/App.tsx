@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Router } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -6,12 +6,31 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Universo from "@/pages/Universo";
-import Skills from "@/components/Skills";
 import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 import { AnimatePresence, motion } from "framer-motion";
 
+// Use hash routing for GitHub Pages
+const useHashLocation = () => {
+  const [loc, setLoc] = React.useState(window.location.hash.slice(1) || "/");
 
-// Animated page transitions for cybertribal aesthetics
+  React.useEffect(() => {
+    const handler = () => {
+      const hash = window.location.hash.slice(1) || "/";
+      setLoc(hash);
+    };
+
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  const navigate = (to: string) => {
+    window.location.hash = to;
+  };
+
+  return [loc, navigate] as const;
+};
+
+// Animated page transitions
 const pageVariants = {
   initial: {
     opacity: 0,
@@ -38,40 +57,32 @@ const pageVariants = {
   }
 };
 
-function Router() {
-  const [location] = useLocation();
-  
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={pageVariants}
-        className="w-full"
-      >
-        <Switch>
-          <Route path="/" component={Home} />
-          {/* Rotas para JOTAVERSO temporariamente desativadas
-          <Route path="/universo" component={Universo} />
-          <Route path="/jotaverso" component={Universo} />
-          */}
-        </Switch>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <MusicPlayerProvider>
-          <Layout>
-            <Toaster />
-            <Router />
-          </Layout>
+          <Router hook={useHashLocation}>
+            <Layout>
+              <Toaster />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={location.pathname}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={pageVariants}
+                  className="w-full"
+                >
+                  <Switch>
+                    <Route path="/" component={Home} />
+                    <Route path="/universo" component={Universo} />
+                    <Route path="/jotaverso" component={Universo} />
+                  </Switch>
+                </motion.div>
+              </AnimatePresence>
+            </Layout>
+          </Router>
         </MusicPlayerProvider>
       </TooltipProvider>
     </QueryClientProvider>
