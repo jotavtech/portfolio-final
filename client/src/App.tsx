@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
+import Sobre from "@pages/Sobre"
 import NotFound from "@/pages/not-found";
 import Universo from "@/pages/Universo";
 import Skills from "@/components/Skills";
 import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 import { AnimatePresence, motion } from "framer-motion";
+
 
 // Animated page transitions for cybertribal aesthetics
 const pageVariants = {
